@@ -1,7 +1,7 @@
 # CheckDomain
 由于我看中了一个域名处于即将删除的状态，于是就诞生了 CheckDomain 来帮我监控这个域名。
 
-CheckDomain 是一个用来检查域名能注册的 Api，基于 Spring Boot 构建，使用了阿里云域名查询 api；
+CheckDomain 是一个用来检查域名是否能注册的 Api，基于 Spring Boot 构建，使用了阿里云域名查询 api；
 
 可实现对域名状态查询，注册监控等，并在可以注册的时候发送邮件通知。
 
