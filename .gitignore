@@ -1,0 +1,7 @@
+# Intellij idea files
+.idea/
+*.iml
+# Generated files
+target
+# Log files
+mylog
