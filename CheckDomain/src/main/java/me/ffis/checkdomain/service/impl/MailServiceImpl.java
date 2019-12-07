@@ -12,9 +12,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
-
+import javax.mail.internet.MimeUtility;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 
 /**
  * 邮件发送服务
@@ -43,19 +45,28 @@ public class MailServiceImpl implements MailService {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             if (MAILSENDER == null) {
+                logger.error("邮件收信人不能为空");
                 throw new RuntimeException("邮件收信人不能为空");
             }
+            String senderName = "域名注册监控Api";
+            try {
+                senderName = MimeUtility.encodeText(senderName);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+                logger.error("编码异常", e);
+            }
             //邮件发送人
-            helper.setFrom(MAILSENDER);
+            helper.setFrom(new InternetAddress(senderName + " <" + MAILSENDER + ">"));
             //邮件接收人
             helper.setTo(MAILRECEIVER);
             //邮件主题
-            helper.setSubject("域名注册监控： 您心仪的域名 " + model.getDomain() + " 现在可以注册辣！");
+            helper.setSubject("域名注册监控：您心仪的域名 " + model.getDomain() + " 现在可以注册辣！");
             //邮件内容
             //获取邮件模板
             String mailHtml = this.getMailHtml(model);
             if (mailHtml == null) {
-                throw new RuntimeException("模板静态化异常");
+                logger.error("获取到的邮件模板为空");
+                throw new RuntimeException("获取到的邮件模板为空");
             }
             helper.setText(mailHtml, true);
             //发送邮件

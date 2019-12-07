@@ -1,7 +1,6 @@
 package me.ffis.checkdomain.controller;
 
 import me.ffis.checkdomain.model.response.ResultResponse;
-import org.springframework.web.bind.annotation.PathVariable;
 
 /**
  * 域名状态查询接口

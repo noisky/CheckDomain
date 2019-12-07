@@ -1,9 +1,7 @@
 package me.ffis.checkdomain.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import me.ffis.checkdomain.model.MailTemplateModel;
-import me.ffis.checkdomain.model.response.AliYunResponse;
+import me.ffis.checkdomain.model.constant.MessageConstant;
 import me.ffis.checkdomain.model.response.CheckDomainCode;
 import me.ffis.checkdomain.model.response.ReponseCode;
 import me.ffis.checkdomain.model.response.ResultResponse;
@@ -13,11 +11,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * 域名监测服务
@@ -45,12 +45,13 @@ public class CheckServiceImpl implements CheckService {
      */
     @Override
     public ResultResponse checkDomain(String domain) {
-        AliYunResponse result = this.queryFromAliyun(domain);
-        if (result == null) {
-            throw new RuntimeException("调用阿里云接口查询失败");
+        //调用查询方法查询域名状态
+        Map map = this.queryFromAliyun(domain);
+        if (map == null) {
+            throw new RuntimeException(MessageConstant.API_PARSING_EXCEPTION);
         }
         //获取查询信息
-        String original = result.getOriginal();
+        String original = (String) map.get("original");
         if (original.contains("210")) {
             //域名可以注册
             return new ResultResponse(CheckDomainCode.DOMAIN_AVAILABLE);
@@ -78,21 +79,22 @@ public class CheckServiceImpl implements CheckService {
             return new ResultResponse(ReponseCode.WRONG_QUERY_PASSWORD);
         }
         //调用接口查询
-        AliYunResponse result = this.queryFromAliyun(domain);
-        if (result == null) {
-            throw new RuntimeException("调用阿里云接口查询失败");
+        Map map = this.queryFromAliyun(domain);
+        if (map == null) {
+            throw new RuntimeException(MessageConstant.API_PARSING_EXCEPTION);
         }
         //获取查询信息
-        String original = result.getOriginal();
-        if (original.contains("210")) {
+        String original = (String) map.get("original");
+        if (original.contains("210")) { //域名可以注册
             //创建模板信息对象
             MailTemplateModel model = new MailTemplateModel();
+            //封装数据
             model.setDomain(domain);
             model.setTime(new Date());
-            model.setStatus("Domain name is available 表示域名可以注册");
+            model.setStatus("Domain name is available 域名可以注册");
             //调用邮件服务发送邮件通知
             mailService.sendSimpleMail(model);
-            //域名可以注册
+            //返回结果
             return new ResultResponse(CheckDomainCode.DOMAIN_AVAILABLE);
         } else if (original.contains("211")) {
             return new ResultResponse(CheckDomainCode.DOMAIN_NOTAVAILABLE);
@@ -106,27 +108,18 @@ public class CheckServiceImpl implements CheckService {
      * @param domain 查询域名
      * @return 查询结果
      */
-    public AliYunResponse queryFromAliyun(String domain) {
+    public Map queryFromAliyun(String domain) {
         //拼接查询地址
         String queryDomain = "http://panda.www.net.cn/cgi-bin/check.cgi?area_domain=" + domain;
         //请求万网接口进行查询
-        String xml = restTemplate.getForObject(queryDomain, String.class);
-        if (xml == null) {
-            logger.error("api返回结果为null");
-            return null;
-        }
-        //创建XmlMapper解析对象
-        ObjectMapper objectMapper = new XmlMapper();
-        AliYunResponse result;
-        try {
-            //解析xml为Result对象
-            result = objectMapper.readValue(xml, AliYunResponse.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-            logger.error("xml解析异常", e);
+        ResponseEntity<Map> forEntity = restTemplate.getForEntity(queryDomain, Map.class);
+        HttpStatus statusCode = forEntity.getStatusCode();
+        //判断查询结果
+        if (!forEntity.getStatusCode().toString().contains("200") || forEntity.getBody() == null) {
+            logger.error(MessageConstant.API_PARSING_EXCEPTION);
             return null;
         }
         //返回查询结果
-        return result;
+        return forEntity.getBody();
     }
 }

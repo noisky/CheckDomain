@@ -1,14 +1,6 @@
 package me.ffis.checkdomain.service;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 import me.ffis.checkdomain.model.MailTemplateModel;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
-
-import java.io.File;
 
 /**
  * 邮件发送服务接口

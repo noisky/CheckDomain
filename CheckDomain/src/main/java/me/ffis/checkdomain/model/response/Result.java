@@ -6,8 +6,10 @@ package me.ffis.checkdomain.model.response;
 public interface Result {
     //操作是否成功
     boolean flag();
+
     //操作代码
     Integer code();
+
     //提示信息
     String message();
 }

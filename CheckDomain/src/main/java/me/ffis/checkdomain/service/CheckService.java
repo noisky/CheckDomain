@@ -1,7 +1,6 @@
 package me.ffis.checkdomain.service;
 
 
-import me.ffis.checkdomain.model.response.Result;
 import me.ffis.checkdomain.model.response.ResultResponse;
 
 /**
@@ -17,5 +16,12 @@ public interface CheckService {
      */
     public ResultResponse checkDomain(String domain);
 
+    /**
+     * 检查域名是否可注册并且邮件通知
+     *
+     * @param domain   域名
+     * @param queryKey 查询key
+     * @return 查询结果
+     */
     public ResultResponse checkDomainAndNotify(String domain, String queryKey);
 }
