@@ -77,7 +77,7 @@ public class CheckServiceImpl implements CheckService {
         if (!queryKey.equals(QUERY_PASSWORD)) {
             return new ResultResponse(ReponseCode.WRONG_QUERY_PASSWORD);
         }
-        //调用接口查询
+        //调用接口查询域名状态
         Map map = this.queryFromAliyun(domain);
         if (map == null) {
             throw new RuntimeException(MessageConstant.API_PARSING_EXCEPTION);
@@ -91,12 +91,16 @@ public class CheckServiceImpl implements CheckService {
             model.setDomain(domain);
             model.setTime(new Date());
             model.setStatus("Domain name is available 域名可以注册");
-            //调用邮件服务发送邮件通知
+            //调用邮件服务异步发送邮件通知
             mailService.sendSimpleMail(model);
             //返回结果
             return new ResultResponse(CheckDomainCode.DOMAIN_AVAILABLE);
         } else if (original.contains("211")) {
             return new ResultResponse(CheckDomainCode.DOMAIN_NOT_AVAILABLE);
+        } else if (original.contains("212")) {
+            return new ResultResponse(CheckDomainCode.DOMAIN_INVALID);
+        } else if (original.contains("213")) {
+            return new ResultResponse(CheckDomainCode.CHECK_TIMEOUT);
         }
         return new ResultResponse(ReponseCode.QUERY_FAIL);
     }

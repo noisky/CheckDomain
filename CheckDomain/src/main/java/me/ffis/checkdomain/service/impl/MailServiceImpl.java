@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import javax.mail.internet.InternetAddress;
@@ -45,7 +46,8 @@ public class MailServiceImpl implements MailService {
     @Value("${customize.mail.senderName}")
     private String SENDER_NAME;
 
-    //发送邮件
+    //异步请求发送邮件
+    @Async
     public void sendSimpleMail(MailTemplateModel model) {
         try {
             //获取MimeMessage对象
