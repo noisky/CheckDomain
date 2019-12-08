@@ -37,13 +37,37 @@ debug：当此属性设置为true时，将打印出logback内部日志信息，�
             <!--日志文件输出的文件名-->
             <fileNamePattern>${LOG_HOME}/${LOG_APPNAME}.%d{yyyy-MM-dd}.log</fileNamePattern>
             <!--只保留最近90天的日志-->
-            <maxHistory>90</maxHistory>
+            <maxHistory>60</maxHistory>
             <!--用来指定日志文件的上限大小，那么到了这个值，就会删除旧的日志-->
-            <!--<totalSizeCap>1GB</totalSizeCap>-->
+            <totalSizeCap>500MB</totalSizeCap>
         </rollingPolicy>
         <!--日志输出编码格式化-->
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} %line - %msg with PID:${PID:-}%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!--邮件日志单独输出-->
+    <appender name="MAIL_LOGS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_HOME}/emailLog/email.log</File>
+        <!--日志追加记录，设置false会清空日志文件再记录-->
+        <append>true</append>
+        <!--只过滤info级别的日志-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/emailLog/email.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!--只保留60天的日志-->
+            <maxHistory>60</maxHistory>
+            <!--限制日志文件的大小为100MB-->
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %-5level %logger{36} %file:%line - %msg%n</pattern>
             <charset>UTF-8</charset>
         </encoder>
     </appender>
@@ -66,6 +90,10 @@ debug：当此属性设置为true时，将打印出logback内部日志信息，�
         <appender-ref ref="CONSOLE"/>
     </logger>
     <logger name="org.springframework.boot" level="DEBUG"/>
+    <!--邮件单独输出的logger-->
+    <logger name="mailLogs" additivity="false" level="INFO">
+        <appender-ref ref="MAIL_LOGS"/>
+    </logger>
 
     <!--
     root节点是必选节点，用来指定最基础的日志输出级别，只有一个level属性。

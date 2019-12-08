@@ -2,19 +2,21 @@ package me.ffis.checkdomain.service.impl;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import lombok.extern.slf4j.Slf4j;
+import me.ffis.checkdomain.model.LogFileName;
 import me.ffis.checkdomain.model.MailTemplateModel;
 import me.ffis.checkdomain.service.MailService;
+import me.ffis.checkdomain.util.LoggerUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
-import javax.mail.internet.MimeUtility;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeUtility;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 
@@ -22,9 +24,11 @@ import java.io.UnsupportedEncodingException;
  * 邮件发送服务
  * Created by fanfan on 2019/12/05.
  */
+
+@Slf4j
 @Service
 public class MailServiceImpl implements MailService {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger maillogger = LoggerUtils.Logger(LogFileName.MAIL_LOGS);
 
     @Autowired
     private JavaMailSender mailSender;
@@ -45,7 +49,7 @@ public class MailServiceImpl implements MailService {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             if (MAILSENDER == null) {
-                logger.error("邮件收信人不能为空");
+                log.error("邮件收信人不能为空");
                 throw new RuntimeException("邮件收信人不能为空");
             }
             String senderName = "域名注册监控Api";
@@ -53,7 +57,7 @@ public class MailServiceImpl implements MailService {
                 senderName = MimeUtility.encodeText(senderName);
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
-                logger.error("编码异常", e);
+                log.error("编码异常", e);
             }
             //邮件发送人
             helper.setFrom(new InternetAddress(senderName + " <" + MAILSENDER + ">"));
@@ -65,16 +69,17 @@ public class MailServiceImpl implements MailService {
             //获取邮件模板
             String mailHtml = this.getMailHtml(model);
             if (mailHtml == null) {
-                logger.error("获取到的邮件模板为空");
+                log.error("获取到的邮件模板为空");
                 throw new RuntimeException("获取到的邮件模板为空");
             }
             helper.setText(mailHtml, true);
             //发送邮件
             mailSender.send(message);
-            logger.info("邮件已发送");
+            //记录发送邮件日志
+            maillogger.info("Successfully sent an email to " + MAILRECEIVER);
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error("邮件发送失败", e);
+            log.error("邮件发送失败", e);
         }
     }
 
@@ -94,7 +99,7 @@ public class MailServiceImpl implements MailService {
             return FreeMarkerTemplateUtils.processTemplateIntoString(template, mailTemplateModel);
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error("模板静态化异常", e);
+            log.error("模板静态化异常", e);
             return null;
         }
     }

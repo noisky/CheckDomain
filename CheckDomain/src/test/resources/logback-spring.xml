@@ -48,6 +48,30 @@ debug：当此属性设置为true时，将打印出logback内部日志信息，�
         </encoder>
     </appender>
 
+    <!--邮件日志单独输出-->
+    <appender name="mailLogs" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_HOME}/emailLog/email.log</File>
+        <!--日志追加记录，设置false会清空日志文件再记录-->
+        <append>true</append>
+        <!--只过滤info级别的日志-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/emailLog/email.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!--只保留60天的日志-->
+            <maxHistory>60</maxHistory>
+            <!--限制日志文件的大小为100MB-->
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %-5level %logger{36} %file:%line - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
     <!-- 异步输出 -->
     <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
         <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->

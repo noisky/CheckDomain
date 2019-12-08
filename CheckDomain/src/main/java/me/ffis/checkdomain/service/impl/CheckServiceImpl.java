@@ -1,5 +1,6 @@
 package me.ffis.checkdomain.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import me.ffis.checkdomain.model.MailTemplateModel;
 import me.ffis.checkdomain.model.constant.MessageConstant;
 import me.ffis.checkdomain.model.response.CheckDomainCode;
@@ -7,8 +8,6 @@ import me.ffis.checkdomain.model.response.ReponseCode;
 import me.ffis.checkdomain.model.response.ResultResponse;
 import me.ffis.checkdomain.service.CheckService;
 import me.ffis.checkdomain.service.MailService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -23,9 +22,9 @@ import java.util.Map;
  * 域名监测服务
  * Created by fanfan on 2019/12/03.
  */
+@Slf4j
 @Service
 public class CheckServiceImpl implements CheckService {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private RestTemplate restTemplate;
@@ -116,7 +115,7 @@ public class CheckServiceImpl implements CheckService {
         HttpStatus statusCode = forEntity.getStatusCode();
         //判断查询结果
         if (!forEntity.getStatusCode().toString().contains("200") || forEntity.getBody() == null) {
-            logger.error(MessageConstant.API_PARSING_EXCEPTION);
+            log.error(MessageConstant.API_PARSING_EXCEPTION);
             return null;
         }
         //返回查询结果
