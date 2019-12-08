@@ -1,6 +1,7 @@
 package me.ffis.checkdomain.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import me.ffis.checkdomain.model.LogFileName;
 import me.ffis.checkdomain.model.MailTemplateModel;
 import me.ffis.checkdomain.model.constant.MessageConstant;
 import me.ffis.checkdomain.model.response.CheckDomainCode;
@@ -8,6 +9,8 @@ import me.ffis.checkdomain.model.response.ReponseCode;
 import me.ffis.checkdomain.model.response.ResultResponse;
 import me.ffis.checkdomain.service.CheckService;
 import me.ffis.checkdomain.service.MailService;
+import me.ffis.checkdomain.util.LoggerUtils;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -79,6 +83,8 @@ public class CheckServiceImpl implements CheckService {
         }
         //调用接口查询域名状态
         Map map = this.queryFromAliyun(domain);
+        /*HashMap<String, String> map = new HashMap<>();
+        map.put("original", "210");*/
         if (map == null) {
             throw new RuntimeException(MessageConstant.API_PARSING_EXCEPTION);
         }
@@ -92,7 +98,7 @@ public class CheckServiceImpl implements CheckService {
             model.setTime(new Date());
             model.setStatus("Domain name is available 域名可以注册");
             //调用邮件服务异步发送邮件通知
-            mailService.sendSimpleMail(model);
+            this.requestSendMail(model);
             //返回结果
             return new ResultResponse(CheckDomainCode.DOMAIN_AVAILABLE);
         } else if (original.contains("211")) {
@@ -124,5 +130,36 @@ public class CheckServiceImpl implements CheckService {
         }
         //返回查询结果
         return forEntity.getBody();
+    }
+
+    private long count = 0;
+    private long timeStamp = this.getNowTime();
+    private long interval = 1000 * 60 * 60 * 12;
+
+    //限制12h内邮件发送次数
+    private void requestSendMail(MailTemplateModel model) {
+        Logger maillogger = LoggerUtils.Logger(LogFileName.MAIL_LOGS);
+        //获取当前时间
+        long nowTime = this.getNowTime();
+        if (nowTime < timeStamp + interval) {
+            if (count < 2) {
+                //发送邮件
+                mailService.sendSimpleMail(model);
+                //计数器+1
+                count++;
+            } else {
+                //当天邮件发送次数已达到限制
+                maillogger.info("域名：" + model.getDomain() + "：邮件发送已达到限制，12小时后重试");
+            }
+        } else {
+            //超时后重置计数器
+            timeStamp = this.getNowTime();
+            count = 0;
+        }
+    }
+
+    //获取当前时间
+    private long getNowTime() {
+        return System.currentTimeMillis();
     }
 }

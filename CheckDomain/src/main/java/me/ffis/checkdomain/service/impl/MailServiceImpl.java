@@ -15,6 +15,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
@@ -48,6 +49,7 @@ public class MailServiceImpl implements MailService {
 
     //异步请求发送邮件
     @Async
+    @Override
     public void sendSimpleMail(MailTemplateModel model) {
         try {
             //获取MimeMessage对象
@@ -82,6 +84,7 @@ public class MailServiceImpl implements MailService {
             mailSender.send(message);
             //记录发送邮件日志
             maillogger.info("Successfully sent an email to " + MAIL_RECEIVER);
+            //log.info("Successfully sent an email to " + MAIL_RECEIVER);
         } catch (Exception e) {
             e.printStackTrace();
             log.error("邮件发送失败", e);
@@ -89,6 +92,7 @@ public class MailServiceImpl implements MailService {
     }
 
     //邮件模板静态化
+    @Override
     public String getMailHtml(MailTemplateModel mailTemplateModel) {
         try {
             //创建配置类
