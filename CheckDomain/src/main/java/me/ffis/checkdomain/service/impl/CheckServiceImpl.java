@@ -33,7 +33,7 @@ public class CheckServiceImpl implements CheckService {
     private MailService mailService;
 
     @Value("${customize.query.password}")
-    private String queryPassword;
+    private String QUERY_PASSWORD;
 
 
     /**
@@ -55,7 +55,7 @@ public class CheckServiceImpl implements CheckService {
             //域名可以注册
             return new ResultResponse(CheckDomainCode.DOMAIN_AVAILABLE);
         } else if (original.contains("211")) {
-            return new ResultResponse(CheckDomainCode.DOMAIN_NOTAVAILABLE);
+            return new ResultResponse(CheckDomainCode.DOMAIN_NOT_AVAILABLE);
         } else if (original.contains("212")) {
             return new ResultResponse(CheckDomainCode.DOMAIN_INVALID);
         } else if (original.contains("213")) {
@@ -74,7 +74,7 @@ public class CheckServiceImpl implements CheckService {
     @Override
     public ResultResponse checkDomainAndNotify(String domain, String queryKey) {
         //验证查询key
-        if (!queryKey.equals(queryPassword)) {
+        if (!queryKey.equals(QUERY_PASSWORD)) {
             return new ResultResponse(ReponseCode.WRONG_QUERY_PASSWORD);
         }
         //调用接口查询
@@ -96,7 +96,7 @@ public class CheckServiceImpl implements CheckService {
             //返回结果
             return new ResultResponse(CheckDomainCode.DOMAIN_AVAILABLE);
         } else if (original.contains("211")) {
-            return new ResultResponse(CheckDomainCode.DOMAIN_NOTAVAILABLE);
+            return new ResultResponse(CheckDomainCode.DOMAIN_NOT_AVAILABLE);
         }
         return new ResultResponse(ReponseCode.QUERY_FAIL);
     }
@@ -107,7 +107,7 @@ public class CheckServiceImpl implements CheckService {
      * @param domain 查询域名
      * @return 查询结果
      */
-    public Map queryFromAliyun(String domain) {
+    Map queryFromAliyun(String domain) {
         //拼接查询地址
         String queryDomain = "http://panda.www.net.cn/cgi-bin/check.cgi?area_domain=" + domain;
         //请求万网接口进行查询

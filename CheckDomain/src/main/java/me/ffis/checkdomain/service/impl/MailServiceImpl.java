@@ -37,10 +37,13 @@ public class MailServiceImpl implements MailService {
     private JavaMailSender javaMailSender;
 
     @Value("${customize.mail.sender}")
-    private String MAILSENDER;
+    private String MAIL_SENDER;
 
     @Value("${customize.mail.receive}")
-    private String MAILRECEIVER;
+    private String MAIL_RECEIVER;
+
+    @Value("${customize.mail.senderName}")
+    private String SENDER_NAME;
 
     //发送邮件
     public void sendSimpleMail(MailTemplateModel model) {
@@ -48,21 +51,21 @@ public class MailServiceImpl implements MailService {
             //获取MimeMessage对象
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            if (MAILSENDER == null) {
+            if (MAIL_SENDER == null) {
                 log.error("邮件收信人不能为空");
                 throw new RuntimeException("邮件收信人不能为空");
             }
-            String senderName = "域名注册监控Api";
+            //设置邮件发送人昵称的encode编码
             try {
-                senderName = MimeUtility.encodeText(senderName);
+                SENDER_NAME = MimeUtility.encodeText(SENDER_NAME);
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
                 log.error("编码异常", e);
             }
-            //邮件发送人
-            helper.setFrom(new InternetAddress(senderName + " <" + MAILSENDER + ">"));
+            //邮件发送人+中文昵称
+            helper.setFrom(new InternetAddress(SENDER_NAME + " <" + MAIL_SENDER + ">"));
             //邮件接收人
-            helper.setTo(MAILRECEIVER);
+            helper.setTo(MAIL_RECEIVER);
             //邮件主题
             helper.setSubject("域名注册监控：您心仪的域名 " + model.getDomain() + " 现在可以注册辣！");
             //邮件内容
@@ -76,7 +79,7 @@ public class MailServiceImpl implements MailService {
             //发送邮件
             mailSender.send(message);
             //记录发送邮件日志
-            maillogger.info("Successfully sent an email to " + MAILRECEIVER);
+            maillogger.info("Successfully sent an email to " + MAIL_RECEIVER);
         } catch (Exception e) {
             e.printStackTrace();
             log.error("邮件发送失败", e);

@@ -16,7 +16,7 @@ import lombok.ToString;
 @ToString
 public enum CheckDomainCode implements Result {
     DOMAIN_AVAILABLE(true, 210, "域名可以注册"),
-    DOMAIN_NOTAVAILABLE(false, 211, "域名已经注册"),
+    DOMAIN_NOT_AVAILABLE(false, 211, "域名已经注册"),
     DOMAIN_INVALID(false, 212, "域名参数传输错误"),
     CHECK_TIMEOUT(false, 213, "查询超时");
 
@@ -27,7 +27,7 @@ public enum CheckDomainCode implements Result {
     //提示信息
     private String message;
 
-    private CheckDomainCode(boolean flag, Integer code, String message) {
+    CheckDomainCode(boolean flag, Integer code, String message) {
         this.flag = flag;
         this.code = code;
         this.message = message;
