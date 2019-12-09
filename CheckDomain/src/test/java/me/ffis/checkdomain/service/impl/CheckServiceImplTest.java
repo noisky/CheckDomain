@@ -1,6 +1,6 @@
 package me.ffis.checkdomain.service.impl;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,7 +14,7 @@ import java.util.Map;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-class CheckServiceImplTest {
+public class CheckServiceImplTest {
 
     @Autowired
     private CheckServiceImpl checkService;
@@ -27,7 +27,7 @@ class CheckServiceImplTest {
     }*/
 
     @Test
-    void queryFromAliyun() {
+    public void queryFromAliyun() {
         String domain = "ffis.me";
         Map map = checkService.queryFromAliyun(domain);
         System.out.println(map);

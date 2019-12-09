@@ -47,7 +47,11 @@ public class MailServiceImpl implements MailService {
     @Value("${customize.mail.senderName}")
     private String SENDER_NAME;
 
-    //异步请求发送邮件
+    /**
+     * 使用异步请求发送邮件
+     *
+     * @param model 发送邮件的数据模型
+     */
     @Async
     @Override
     public void sendSimpleMail(MailTemplateModel model) {
@@ -83,15 +87,20 @@ public class MailServiceImpl implements MailService {
             //发送邮件
             mailSender.send(message);
             //记录发送邮件日志
-            maillogger.info("Successfully sent an email to " + MAIL_RECEIVER);
-            //log.info("Successfully sent an email to " + MAIL_RECEIVER);
+            maillogger.info("Successfully sent an email to " + MAIL_RECEIVER + ", " + model.getDomain() + " is registerable.");
+            //log.info("Successfully sent an email to " + MAIL_RECEIVER + ", " + model.getDomain() + " is registerable.");
         } catch (Exception e) {
             e.printStackTrace();
             log.error("邮件发送失败", e);
         }
     }
 
-    //邮件模板静态化
+    /**
+     * 邮件模板静态化
+     *
+     * @param mailTemplateModel 模板数据模型
+     * @return 加上数据后的静态化模板
+     */
     @Override
     public String getMailHtml(MailTemplateModel mailTemplateModel) {
         try {

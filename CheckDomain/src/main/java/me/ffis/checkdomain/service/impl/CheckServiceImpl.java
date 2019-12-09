@@ -132,33 +132,49 @@ public class CheckServiceImpl implements CheckService {
         return forEntity.getBody();
     }
 
-    private long count = 0;
     private long timeStamp = this.getNowTime();
-    private long interval = 1000 * 60 * 60 * 12;
+    private long interval = 1000 * 60 * 60 * 12; //12h
+    private HashMap<String, Integer> sendCountMap = new HashMap<String, Integer>();
 
-    //限制12h内邮件发送次数
+    /**
+     * 限制12h内邮件发送次数
+     *
+     * @param model 发送邮件的数据模型
+     */
     private void requestSendMail(MailTemplateModel model) {
         Logger maillogger = LoggerUtils.Logger(LogFileName.MAIL_LOGS);
         //获取当前时间
         long nowTime = this.getNowTime();
         if (nowTime < timeStamp + interval) {
-            if (count < 2) {
+            //获取该域名的邮件发送次数
+            Integer sendCount = sendCountMap.get(model.getDomain());
+            //如果没有发过邮件则发送邮件并记录次数
+            if (sendCount == null) {
+                //发送邮件
+                mailService.sendSimpleMail(model);
+                //记录该域名的邮件发送次数
+                sendCountMap.put(model.getDomain(), 1);
+            } else if (sendCount < 3) {
                 //发送邮件
                 mailService.sendSimpleMail(model);
                 //计数器+1
-                count++;
+                sendCountMap.put(model.getDomain(), sendCount + 1);
             } else {
                 //当天邮件发送次数已达到限制
-                maillogger.info("域名：" + model.getDomain() + "：邮件发送已达到限制，12小时后重试");
+                maillogger.info("域名：" + model.getDomain() + " 的邮件发送已达到限制，12小时后重试");
             }
         } else {
-            //超时后重置计数器
+            //超时后重置时间戳和计数器
             timeStamp = this.getNowTime();
-            count = 0;
+            sendCountMap.clear();
         }
     }
 
-    //获取当前时间
+    /**
+     * 获取当前时间方法
+     *
+     * @return 当前的时间
+     */
     private long getNowTime() {
         return System.currentTimeMillis();
     }

@@ -7,9 +7,13 @@
     <groupId>me.ffis</groupId>
     <artifactId>CheckDomain</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
     <properties>
-        <spring-boot-starter>2.2.1.RELEASE</spring-boot-starter>
+        <spring-boot-version>2.2.1.RELEASE</spring-boot-version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
     </properties>
 
     <dependencies>
@@ -17,7 +21,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>${spring-boot-starter}</version>
+            <version>${spring-boot-version}</version>
         </dependency>
         <!--ok http-->
         <dependency>
@@ -29,7 +33,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
-            <version>${spring-boot-starter}</version>
+            <version>${spring-boot-version}</version>
         </dependency>
         <!--jackson xml解析器 -->
         <dependency>
@@ -41,13 +45,13 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-logging</artifactId>
-            <version>${spring-boot-starter}</version>
+            <version>${spring-boot-version}</version>
         </dependency>
         <!--freemarker 页面静态化-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-freemarker</artifactId>
-            <version>${spring-boot-starter}</version>
+            <version>${spring-boot-version}</version>
         </dependency>
         <!--lombok-->
         <dependency>
@@ -60,7 +64,31 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-            <version>${spring-boot-starter}</version>
+            <version>${spring-boot-version}</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot-version}</version>
+                <configuration>
+                    <!-- 指定该Main Class为全局的唯一入口 -->
+                    <mainClass>me.ffis.checkdomain.CheckDomainApplication</mainClass>
+                    <layout>ZIP</layout>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <!--可以把依赖的包都打包到生成的Jar包中-->
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
