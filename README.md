@@ -17,7 +17,7 @@ CheckDomain 是一个用来检查域名是否能注册的 Api，基于 Spring Bo
 
 1、查看域名状态：
 
-- 请求方式：`Get请求`
+- 请求方式：`GET请求`
     
     - 请求地址：`/domain/{name}`
     
@@ -27,7 +27,7 @@ CheckDomain 是一个用来检查域名是否能注册的 Api，基于 Spring Bo
 
 2、查看域名状态并在可注册时发送邮件通知：
 
-1）请求方式：`Get 请求`
+1）请求方式：`GET请求`
 
 - 请求地址：`/domain/{name}/{email}/{querykey}`
 
@@ -37,9 +37,9 @@ CheckDomain 是一个用来检查域名是否能注册的 Api，基于 Spring Bo
     
     - `{email}`： 接受通知的邮箱地址
    
-    - `querykey`：查询密码，在 yml 配置文件中设置
+    - `querykey`： 查询密码，在 yml 配置文件中设置
         
-2）请求方式：`POST 请求`
+2）请求方式：`POST请求`
 
 - 请求地址：`/domain/{name}`
 
@@ -49,9 +49,9 @@ CheckDomain 是一个用来检查域名是否能注册的 Api，基于 Spring Bo
     
     - POST提交的表单：
     
-        - `email`: 接受通知的邮箱地址
+        - `email`： 接受通知的邮箱地址
         
-        - `querykey`：查询密码，在 yml 配置文件中设置
+        - `querykey`： 查询密码，在 yml 配置文件中设置
 
 > 可以使用第三方监控（如阿里云监控）来请求 Api 来达到监控域名注册状态
 
