@@ -11,8 +11,10 @@ public enum ReponseCode implements Result {
     QUERY_FAIL(false, 101, "查询失败"),
     ILLEGAL_PARAMETER(false, 102, "非法参数"),
     WRONG_QUERY_PASSWORD(false, 103, "查询密码错误"),
-    RETURN_NULL(false, 105, "api返回值为null"),
-    PARSING_EXCEPTION(false, 106, "xml解析异常");
+    API_RETURN_NULL(false, 105, "Api请求异常"),
+    PARSING_EXCEPTION(false, 106, "xml解析异常"),
+    EMAIL_ADDR_ERROR(false, 107, "邮箱格式不正确"),
+    SERVER_ERROR(false, 999, "系统繁忙，请稍后重试");
 
     //操作是否成功
     private boolean flag;

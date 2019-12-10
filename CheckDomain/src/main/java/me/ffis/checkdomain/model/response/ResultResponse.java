@@ -20,6 +20,12 @@ public class ResultResponse {
     //提示信息
     private String message;
 
+    public ResultResponse(boolean flag, Integer code, String message) {
+        this.flag = flag;
+        this.code = code;
+        this.message = message;
+    }
+
     public ResultResponse(Result result) {
         this.flag = result.flag();
         this.code = result.code();

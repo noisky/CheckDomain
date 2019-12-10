@@ -23,5 +23,5 @@ public interface CheckService {
      * @param queryKey 查询key
      * @return 查询结果
      */
-    public ResultResponse checkDomainAndNotify(String domain, String queryKey);
+    public ResultResponse checkDomainAndNotify(String domain, String email, String queryKey);
 }

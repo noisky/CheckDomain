@@ -25,7 +25,6 @@ customize:
   mail:
     senderName: 域名注册监控Api
     sender: ${MailUsername}
-    receive: ${MailReceiver}
   query:
     password: ${QueryKey}
 #日志配置

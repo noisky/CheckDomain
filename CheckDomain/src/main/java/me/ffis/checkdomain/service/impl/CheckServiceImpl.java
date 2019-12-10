@@ -16,11 +16,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * 域名监测服务
@@ -51,7 +53,7 @@ public class CheckServiceImpl implements CheckService {
         //调用查询方法查询域名状态
         Map map = this.queryFromAliyun(domain);
         if (map == null) {
-            throw new RuntimeException(MessageConstant.API_PARSING_EXCEPTION);
+            return new ResultResponse(ReponseCode.SERVER_ERROR);
         }
         //获取查询信息
         String original = (String) map.get("original");
@@ -76,17 +78,26 @@ public class CheckServiceImpl implements CheckService {
      * @return 查询结果
      */
     @Override
-    public ResultResponse checkDomainAndNotify(String domain, String queryKey) {
+    public ResultResponse checkDomainAndNotify(String domain, String email, String queryKey) {
+        //验证邮箱格式
+        //定义正则
+        String EMAIL_REGEX = "^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$";
+        //进行邮箱格式验证
+        boolean matches = Pattern.matches(EMAIL_REGEX, email);
+        //判断邮箱验证结果
+        if (!matches) {
+            return new ResultResponse(ReponseCode.EMAIL_ADDR_ERROR);
+        }
         //验证查询key
         if (!queryKey.equals(QUERY_PASSWORD)) {
             return new ResultResponse(ReponseCode.WRONG_QUERY_PASSWORD);
         }
         //调用接口查询域名状态
-        Map map = this.queryFromAliyun(domain);
-        /*HashMap<String, String> map = new HashMap<>();
-        map.put("original", "210");*/
+        //Map map = this.queryFromAliyun(domain);
+        HashMap<String, String> map = new HashMap<>();
+        map.put("original", "210");
         if (map == null) {
-            throw new RuntimeException(MessageConstant.API_PARSING_EXCEPTION);
+            return new ResultResponse(ReponseCode.SERVER_ERROR);
         }
         //获取查询信息
         String original = (String) map.get("original");
@@ -97,10 +108,10 @@ public class CheckServiceImpl implements CheckService {
             model.setDomain(domain);
             model.setTime(new Date());
             model.setStatus("Domain name is available 域名可以注册");
-            //调用邮件服务异步发送邮件通知
-            this.requestSendMail(model);
+            //请求发送邮件
+            String result = this.requestSendMail(model, email);
             //返回结果
-            return new ResultResponse(CheckDomainCode.DOMAIN_AVAILABLE);
+            return new ResultResponse(true, 210, "域名可以注册，" + result);
         } else if (original.contains("211")) {
             return new ResultResponse(CheckDomainCode.DOMAIN_NOT_AVAILABLE);
         } else if (original.contains("212")) {
@@ -121,7 +132,14 @@ public class CheckServiceImpl implements CheckService {
         //拼接查询地址
         String queryDomain = "http://panda.www.net.cn/cgi-bin/check.cgi?area_domain=" + domain;
         //请求万网接口进行查询
-        ResponseEntity<Map> forEntity = restTemplate.getForEntity(queryDomain, Map.class);
+        ResponseEntity<Map> forEntity = null;
+        try {
+            forEntity = restTemplate.getForEntity(queryDomain, Map.class);
+        } catch (RestClientException e) {
+            e.printStackTrace();
+            log.error(MessageConstant.API_PARSING_EXCEPTION, e);
+            return null;
+        }
         HttpStatus statusCode = forEntity.getStatusCode();
         //判断查询结果
         if (!forEntity.getStatusCode().toString().contains("200") || forEntity.getBody() == null) {
@@ -133,7 +151,8 @@ public class CheckServiceImpl implements CheckService {
     }
 
     private long timeStamp = this.getNowTime();
-    private long interval = 1000 * 60 * 60 * 12; //12h
+    private static final long interval = 1000 * 60 * 60 * 12; //12h
+    //private static final long interval = 1000 * 5; //5s
     private HashMap<String, Integer> sendCountMap = new HashMap<String, Integer>();
 
     /**
@@ -141,7 +160,7 @@ public class CheckServiceImpl implements CheckService {
      *
      * @param model 发送邮件的数据模型
      */
-    private void requestSendMail(MailTemplateModel model) {
+    private String requestSendMail(MailTemplateModel model, String email) {
         Logger maillogger = LoggerUtils.Logger(LogFileName.MAIL_LOGS);
         //获取当前时间
         long nowTime = this.getNowTime();
@@ -150,24 +169,31 @@ public class CheckServiceImpl implements CheckService {
             Integer sendCount = sendCountMap.get(model.getDomain());
             //如果没有发过邮件则发送邮件并记录次数
             if (sendCount == null) {
-                //发送邮件
-                mailService.sendSimpleMail(model);
+                //调用异步请求发送邮件
+                mailService.sendSimpleMail(model, email);
                 //记录该域名的邮件发送次数
                 sendCountMap.put(model.getDomain(), 1);
-            } else if (sendCount < 3) {
-                //发送邮件
-                mailService.sendSimpleMail(model);
+                return "发送了第1封邮件进行通知";
+            }
+            if (sendCount < 3) {
+                //调用异步请求发送邮件
+                mailService.sendSimpleMail(model, email);
                 //计数器+1
                 sendCountMap.put(model.getDomain(), sendCount + 1);
-            } else {
-                //当天邮件发送次数已达到限制
-                maillogger.info("域名：" + model.getDomain() + " 的邮件发送已达到限制，12小时后重试");
+                return "发送了第" + (sendCount + 1) + "封邮件进行通知";
             }
-        } else {
-            //超时后重置时间戳和计数器
-            timeStamp = this.getNowTime();
-            sendCountMap.clear();
+            //当天邮件发送次数已达到限制
+            maillogger.info("域名：" + model.getDomain() + " 的邮件发送已达到限制，12小时后重试");
+            return "该域名当天邮件发送次数已达到上限";
         }
+        //超时后重置时间戳和计数器
+        timeStamp = this.getNowTime();
+        sendCountMap.clear();
+        //调用异步请求发送邮件
+        mailService.sendSimpleMail(model, email);
+        //记录该域名的邮件发送次数
+        sendCountMap.put(model.getDomain(), 1);
+        return "发送了第1封邮件进行通知";
     }
 
     /**

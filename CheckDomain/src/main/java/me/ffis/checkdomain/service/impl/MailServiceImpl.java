@@ -41,9 +41,6 @@ public class MailServiceImpl implements MailService {
     @Value("${customize.mail.sender}")
     private String MAIL_SENDER;
 
-    @Value("${customize.mail.receive}")
-    private String MAIL_RECEIVER;
-
     @Value("${customize.mail.senderName}")
     private String SENDER_NAME;
 
@@ -51,10 +48,11 @@ public class MailServiceImpl implements MailService {
      * 使用异步请求发送邮件
      *
      * @param model 发送邮件的数据模型
+     * @param email 接受邮件的邮箱
      */
     @Async
     @Override
-    public void sendSimpleMail(MailTemplateModel model) {
+    public void sendSimpleMail(MailTemplateModel model, String email) {
         try {
             //获取MimeMessage对象
             MimeMessage message = javaMailSender.createMimeMessage();
@@ -73,7 +71,7 @@ public class MailServiceImpl implements MailService {
             //邮件发送人+中文昵称
             helper.setFrom(new InternetAddress(SENDER_NAME + " <" + MAIL_SENDER + ">"));
             //邮件接收人
-            helper.setTo(MAIL_RECEIVER);
+            helper.setTo(email);
             //邮件主题
             helper.setSubject("域名注册监控：您心仪的域名 " + model.getDomain() + " 现在可以注册辣！");
             //邮件内容
@@ -87,8 +85,8 @@ public class MailServiceImpl implements MailService {
             //发送邮件
             mailSender.send(message);
             //记录发送邮件日志
-            maillogger.info("Successfully sent an email to " + MAIL_RECEIVER + ", " + model.getDomain() + " is registerable.");
-            //log.info("Successfully sent an email to " + MAIL_RECEIVER + ", " + model.getDomain() + " is registerable.");
+            maillogger.info(model.getDomain() + " is available, successfully sent an email to " + email);
+            //log.info(model.getDomain() + " is available, successfully sent an email to " + email);
         } catch (Exception e) {
             e.printStackTrace();
             log.error("邮件发送失败", e);

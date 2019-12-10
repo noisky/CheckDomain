@@ -42,7 +42,7 @@ public class MailServiceImplTest {
         model.setDomain("ffis.me");
         model.setTime(new Date());
         model.setStatus("Domain name is available 表示域名可以注册");
-        mailService.sendSimpleMail(model);
+        mailService.sendSimpleMail(model, "ffis.me");
     }
 
     @Test
