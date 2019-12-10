@@ -93,9 +93,9 @@ public class CheckServiceImpl implements CheckService {
             return new ResultResponse(ReponseCode.WRONG_QUERY_PASSWORD);
         }
         //调用接口查询域名状态
-        //Map map = this.queryFromAliyun(domain);
-        HashMap<String, String> map = new HashMap<>();
-        map.put("original", "210");
+        Map map = this.queryFromAliyun(domain);
+        /*HashMap<String, String> map = new HashMap<>();
+        map.put("original", "210");*/
         if (map == null) {
             return new ResultResponse(ReponseCode.SERVER_ERROR);
         }

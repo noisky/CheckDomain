@@ -15,11 +15,11 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 
 /**
@@ -43,6 +43,9 @@ public class MailServiceImpl implements MailService {
 
     @Value("${customize.mail.senderName}")
     private String SENDER_NAME;
+
+    @Autowired
+    FreeMarkerConfigurer freeMarkerConfigurer;
 
     /**
      * 使用异步请求发送邮件
@@ -104,13 +107,10 @@ public class MailServiceImpl implements MailService {
         try {
             //创建配置类
             Configuration configuration = new Configuration(Configuration.getVersion());
-            //设置模板路径
-            String classpath = this.getClass().getResource("/").getPath();
-            configuration.setDirectoryForTemplateLoading(new File(classpath + "/templates"));
             //设置字符集
             configuration.setDefaultEncoding("utf-8");
             //加载模板
-            Template template = configuration.getTemplate("mailTemplate.ftl");
+            Template template = freeMarkerConfigurer.getConfiguration().getTemplate("mailTemplate.ftl");
             //模板静态化并返回
             return FreeMarkerTemplateUtils.processTemplateIntoString(template, mailTemplateModel);
         } catch (Exception e) {
