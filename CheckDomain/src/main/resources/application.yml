@@ -9,14 +9,23 @@ spring:
       template_update_delay: 0 #检查模板更新延迟时间，设置为0表示立即检查，如果时间大于0会有缓存不方便进行模板测试邮箱配置
   #邮件发送配置
   mail:
+    #邮件服务地址
     host: smtpdm.aliyun.com
+    #用户名
     username: ${MailUsername}
+    #密码
     password: ${MailPassword}
+    #编码格式
     default-encoding: UTF-8
+    #其他参数
     properties:
       mail:
         smtp:
+          #如果用ssl方式，需要配置以下属性
           auth: true
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+            port: 465
           starttls:
             enable: true
             required: true
