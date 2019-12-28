@@ -6,4 +6,5 @@ package me.ffis.checkdomain.model.constant;
  */
 public class MessageConstant {
     public static final String API_PARSING_EXCEPTION = "Api解析异常";
+    public static final String WHOIS_PARSING_EXCEPTION = "whois解析异常";
 }

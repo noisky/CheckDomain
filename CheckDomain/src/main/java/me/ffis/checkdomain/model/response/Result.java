@@ -12,4 +12,7 @@ public interface Result {
 
     //提示信息
     String message();
+
+    //返回信息
+    Object data();
 }

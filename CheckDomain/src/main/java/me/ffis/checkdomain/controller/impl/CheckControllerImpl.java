@@ -22,6 +22,7 @@ public class CheckControllerImpl implements CheckControllerApi {
 
     /**
      * 查看域名状态
+     * method:GET
      *
      * @param domain 查看的域名
      * @return 域名状态
@@ -61,5 +62,4 @@ public class CheckControllerImpl implements CheckControllerApi {
     public ResultResponse checkDomainAndNotifyWithPost(@PathVariable("name") String domain, String email, String querykey) {
         return checkServiceImpl.checkDomainAndNotify(domain, email, querykey);
     }
-
 }

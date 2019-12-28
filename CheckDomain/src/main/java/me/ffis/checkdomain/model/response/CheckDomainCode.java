@@ -26,6 +26,8 @@ public enum CheckDomainCode implements Result {
     private Integer code;
     //提示信息
     private String message;
+    //返回数据
+    private Object data;
 
     CheckDomainCode(boolean flag, Integer code, String message) {
         this.flag = flag;
@@ -46,5 +48,10 @@ public enum CheckDomainCode implements Result {
     @Override
     public String message() {
         return message;
+    }
+
+    @Override
+    public Object data() {
+        return data;
     }
 }
