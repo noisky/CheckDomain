@@ -74,9 +74,9 @@ public class CnParser extends AParser {
 //            String phone = getFieldValue(getMatchField(phonePattern, whoisResponse), ":");
 //            whoisModel.setPhone(phone);
             String createDate = getFieldValue(getMatchField(createDatePattern, whoisResponse), ":");
-            whoisModel.setCreatDate(simpleDateFormat.parse(createDate).getTime());
+            whoisModel.setCreatDate(simpleDateFormat.parse(createDate));
             String expireDate = getFieldValue(getMatchField(expireDatePattern, whoisResponse), ":");
-            whoisModel.setExpireDate(simpleDateFormat.parse(expireDate).getTime());
+            whoisModel.setExpireDate(simpleDateFormat.parse(expireDate));
 //            String updateDate = getFieldValue(getMatchField(updateDatePattern, whoisResponse), ":");
 //            whoisModel.setUpdateDate(simpleDateFormat.parse(updateDate).getTime());
 //            String whoisServer = getFieldValue(getMatchField(whoisServerPattern, whoisResponse), ":");

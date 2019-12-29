@@ -1,9 +1,11 @@
 package me.ffis.checkdomain.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,9 +20,12 @@ public class WhoisModel implements Serializable {
     private String registrar;
     private String email;
     private String phone;
-    private long creatDate;
-    private long expireDate;
-    private long updateDate;
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date creatDate;
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date expireDate;
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateDate;
     private String whoisServer;
     private List<String> NameServer;
     private List<String> domainStatus;

@@ -91,12 +91,13 @@ public class VerisignParser extends AParser {
             whoisModel.setEmail(email);
             String phone = getFieldValue(getMatchField(phonePattern, whoisResponse), ":");
             whoisModel.setPhone(phone);
+            //SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String createDate = getFieldValue(getMatchField(createDatePattern, whoisResponse), ":");
-            whoisModel.setCreatDate(simpleDateFormat.parse(createDate).getTime());
+            whoisModel.setCreatDate(simpleDateFormat.parse(createDate));
             String expireDate = getFieldValue(getMatchField(expireDatePattern, whoisResponse), ":");
-            whoisModel.setExpireDate(simpleDateFormat.parse(expireDate).getTime());
+            whoisModel.setExpireDate(simpleDateFormat.parse(expireDate));
             String updateDate = getFieldValue(getMatchField(updateDatePattern, whoisResponse), ":");
-            whoisModel.setUpdateDate(simpleDateFormat.parse(updateDate).getTime());
+            whoisModel.setUpdateDate(simpleDateFormat.parse(updateDate));
             String whoisServer = getFieldValue(getMatchField(whoisServerPattern, whoisResponse), ":");
             whoisModel.setWhoisServer(whoisServer);
             List<String> nameServerMarchs = getMarchs(nameServerPattern, whoisResponse, ":");

@@ -4,7 +4,10 @@ import me.ffis.checkdomain.model.WhoisModel;
 import me.ffis.checkdomain.util.WhoisUtil;
 import org.junit.Test;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,7 +44,19 @@ public class WhoisTest {
         for (String s : list) {
             System.out.println(s);
         }
+    }
 
+    @Test
+    public void testDate() {
+        String date = "2019-12-29 11:11:11";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            Date date1 = sdf.parse(date);
+            String format = sdf.format(date1);
+            System.out.println(format);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
 }
