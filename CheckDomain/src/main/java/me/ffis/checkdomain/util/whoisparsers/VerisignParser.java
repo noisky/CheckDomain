@@ -57,16 +57,16 @@ public class VerisignParser extends AParser {
     }
 
     //定义解析正则
-    private final String DOMAINREG = "\\s*Domain Name:\\s*[^\\n]+";
-    private final String REGISTRARREG = "\\s*Registrar:\\s*[^\\n]+";
-    private final String EMAILREG = "\\s*Registrar Abuse Contact Email:\\s*[^\\n]+";
-    private final String PHONEREG = "\\s*Registrar Abuse Contact Phone:\\s*[^\\n]+";
-    private final String CREATDATEREG = "\\s*Creation Date:\\s*[^\\n]+";
-    private final String EXPIREDATEREG = "\\s*Registry Expiry Date:\\s*[^\\n]+";
-    private final String UPDATEDATEREG = "\\s*Updated Date:\\s*[^\\n]+";
-    private final String WHOISREG = "\\s*Registrar WHOIS Server:\\s*[^\\n]+";
-    private final String NAMESERVERREG = "\\s*Name Server:\\s*[^\\n]+";
-    private final String STATUSREG = "\\s*Domain Status:\\s*[^\\n]+";
+    private final String DOMAINREG = "Domain Name: *(.+)";
+    private final String REGISTRARREG = "Registrar: *(.+)";
+    private final String EMAILREG = "Registrar Abuse Contact Email: *(.+)";
+    private final String PHONEREG = "Registrar Abuse Contact Phone: *(.+)";
+    private final String CREATDATEREG = "Creation Date: *(.+)";
+    private final String EXPIREDATEREG = "Registry Expiry Date: *(.+)";
+    private final String UPDATEDATEREG = "Updated Date: *(.+)";
+    private final String WHOISREG = "Registrar WHOIS Server: *(.+)";
+    private final String NAMESERVERREG = "Name Server: *(.+)";
+    private final String STATUSREG = "Domain Status: *(.+)";
     private Pattern domainPattern = Pattern.compile(DOMAINREG);
     private Pattern registrarPattern = Pattern.compile(REGISTRARREG);
     private Pattern emailPattern = Pattern.compile(EMAILREG);

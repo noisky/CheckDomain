@@ -17,6 +17,7 @@ public enum ReponseCode implements Result {
     EMAIL_ADDR_ERROR(false, 108, "邮箱格式不正确"),
     DOMAIN_NOT_EXIST(false, 110, "查询域名不存在"),
     UNSUPPORTED_SUFFIX(false, 111, "不支持的后缀"),
+    QUERY_TIMEOUT(false, 400, "查询超时，请稍后重试"),
     SERVER_ERROR(false, 999, "系统繁忙，请稍后重试");
 
     //操作是否成功

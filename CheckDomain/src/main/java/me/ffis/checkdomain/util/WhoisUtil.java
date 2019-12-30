@@ -81,6 +81,7 @@ public class WhoisUtil implements Serializable {
         } catch (IOException e) {
             e.printStackTrace();
             log.error(e.getMessage(), e);
+            ExceptionCast.cast(ReponseCode.QUERY_TIMEOUT);
         } finally {
             if (whoisClient != null) {
                 try {

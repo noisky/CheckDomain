@@ -39,16 +39,16 @@ public class CnParser extends AParser {
     }
 
     //定义cn域名解析正则
-    private final String DOMAINREG = "\\s*Domain Name:\\s*[^\\n]+";
-    private final String REGISTRARREG = "\\s*Registrant:\\s*[^\\n]+";
-    private final String EMAILREG = "\\s*Registrant Contact Email:\\s*[^\\n]+";
+    private final String DOMAINREG = "Domain Name: *(.+)";
+    private final String REGISTRARREG = "Registrant: *(.+)";
+    private final String EMAILREG = "Registrant Contact Email: *(.+)";
     //    private final String PHONEREG = "\\s*Registrar Abuse Contact Phone:\\s*[^\\n]+";
-    private final String CREATDATEREG = "\\s*Registration Time:\\s*[^\\n]+";
-    private final String EXPIREDATEREG = "\\s*Expiration Time:\\s*[^\\n]+";
+    private final String CREATDATEREG = "Registration Time: *(.+)";
+    private final String EXPIREDATEREG = "Expiration Time: *(.+)";
     //    private final String UPDATEDATEREG = "\\s*Updated Date:\\s*[^\\n]+";
 //    private final String WHOISREG = "\\s*Registrar WHOIS Server:\\s*[^\\n]+";
-    private final String NAMESERVERREG = "\\s*Name Server:\\s*[^\\n]+";
-    private final String STATUSREG = "\\s*Domain Status:\\s*[^\\n]+";
+    private final String NAMESERVERREG = "Name Server: *(.+)";
+    private final String STATUSREG = "Domain Status: *(.+)";
     private Pattern domainPattern = Pattern.compile(DOMAINREG);
     private Pattern registrarPattern = Pattern.compile(REGISTRARREG);
     private Pattern emailPattern = Pattern.compile(EMAILREG);
