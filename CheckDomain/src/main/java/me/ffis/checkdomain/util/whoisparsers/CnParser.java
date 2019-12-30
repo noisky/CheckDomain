@@ -1,6 +1,8 @@
 package me.ffis.checkdomain.util.whoisparsers;
 
+import lombok.extern.slf4j.Slf4j;
 import me.ffis.checkdomain.model.WhoisModel;
+import me.ffis.checkdomain.model.constant.MessageConstant;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -25,6 +27,8 @@ import java.util.regex.Pattern;
  * Expiration Time: 2020-03-17 12:48:36
  * DNSSEC: unsigned
  */
+
+@Slf4j
 public class CnParser extends AParser {
     private CnParser() {
     }
@@ -86,7 +90,8 @@ public class CnParser extends AParser {
             List<String> statusMarchs = getMarchs(statusPattern, whoisResponse, ":");
             whoisModel.setDomainStatus(statusMarchs);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            log.error(MessageConstant.WHOIS_PARSING_EXCEPTION, ex);
+            return null;
         }
         return whoisModel;
     }

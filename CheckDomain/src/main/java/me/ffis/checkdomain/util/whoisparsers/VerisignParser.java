@@ -1,10 +1,8 @@
 package me.ffis.checkdomain.util.whoisparsers;
 
 import lombok.extern.slf4j.Slf4j;
-import me.ffis.checkdomain.exception.ExceptionCast;
 import me.ffis.checkdomain.model.WhoisModel;
 import me.ffis.checkdomain.model.constant.MessageConstant;
-import me.ffis.checkdomain.model.response.ReponseCode;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -106,7 +104,7 @@ public class VerisignParser extends AParser {
             whoisModel.setDomainStatus(statusMarchs);
         } catch (Exception ex) {
             log.error(MessageConstant.WHOIS_PARSING_EXCEPTION, ex);
-            ExceptionCast.cast(ReponseCode.WHOIS_PARSING_EXCEPTION);
+            return null;
         }
         return whoisModel;
     }

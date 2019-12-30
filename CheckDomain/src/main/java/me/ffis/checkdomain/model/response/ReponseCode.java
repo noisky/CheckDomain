@@ -13,7 +13,7 @@ public enum ReponseCode implements Result {
     WRONG_QUERY_PASSWORD(false, 103, "查询密码错误"),
     API_RETURN_NULL(false, 105, "Api请求异常"),
     XML_PARSING_EXCEPTION(false, 106, "xml解析异常"),
-    WHOIS_PARSING_EXCEPTION(false, 107, "whois解析异常"),
+    WHOIS_PARSING_EXCEPTION(false, 107, "whois信息解析异常"),
     EMAIL_ADDR_ERROR(false, 108, "邮箱格式不正确"),
     DOMAIN_NOT_EXIST(false, 110, "查询域名不存在"),
     UNSUPPORTED_SUFFIX(false, 111, "不支持的后缀"),

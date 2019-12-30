@@ -1,10 +1,7 @@
 package me.ffis.checkdomain.util;
 
 import lombok.extern.slf4j.Slf4j;
-import me.ffis.checkdomain.exception.ExceptionCast;
 import me.ffis.checkdomain.model.WhoisModel;
-import me.ffis.checkdomain.model.response.ReponseCode;
-import me.ffis.checkdomain.model.response.ResultResponse;
 import me.ffis.checkdomain.util.whoisparsers.WhoisParserFactory;
 import org.apache.commons.net.whois.WhoisClient;
 import org.parboiled.common.Tuple2;
@@ -62,26 +59,36 @@ public class WhoisUtil implements Serializable {
                     break;
                 }
             }
-            //如果域名的后缀不在列表中，返回null
+            //如果域名的后缀不在列表中
             if (curDoaminServer == null) {
-                ExceptionCast.cast(ReponseCode.UNSUPPORTED_SUFFIX);
+                whoisModel.setDomain("-1");
+                return whoisModel;
             }
             //设置whois客户端的whois查询服务器
             whoisClient.connect(curDoaminServer);
             //进行whois查询
             String result = whoisClient.query(host);
+            //在查询结果中检查域名是否存在
             if (result.contains("No match") || result.contains("NOT FOUND")) {
+                whoisModel.setDomain("-2");
                 whoisModel.setWhiosReponse(result);
-                ExceptionCast.cast(new ResultResponse(ReponseCode.DOMAIN_NOT_EXIST, whoisModel));
+                return whoisModel;
             }
             //解析查询结果
             whoisModel = WhoisParserFactory.getInstance().getParser(curDoaminServer).parseWhois(result);
+            //解析为空返回-4
+            if (whoisModel == null) {
+                whoisModel = new WhoisModel();
+                whoisModel.setDomain("-4");
+                whoisModel.setWhiosReponse(result);
+                return whoisModel;
+            }
             //将whois查询的返回值注入到模型对象中
             whoisModel.setWhiosReponse(result);
         } catch (IOException e) {
-            e.printStackTrace();
             log.error(e.getMessage(), e);
-            ExceptionCast.cast(ReponseCode.QUERY_TIMEOUT);
+            whoisModel.setDomain("-3");
+            return whoisModel;
         } finally {
             if (whoisClient != null) {
                 try {
