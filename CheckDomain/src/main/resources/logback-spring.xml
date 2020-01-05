@@ -90,6 +90,7 @@ debug：当此属性设置为true时，将打印出logback内部日志信息，�
         <appender-ref ref="CONSOLE"/>
     </logger>
     <logger name="org.springframework.boot" level="DEBUG"/>
+    <logger name="org.springframework.boot.autoconfigure" level="INFO"/>
     <!--邮件单独输出的logger-->
     <logger name="mailLogs" additivity="false" level="INFO">
         <appender-ref ref="MAIL_LOGS"/>
