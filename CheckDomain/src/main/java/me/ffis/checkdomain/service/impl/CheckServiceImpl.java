@@ -1,13 +1,11 @@
 package me.ffis.checkdomain.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import me.ffis.checkdomain.exception.ExceptionCast;
 import me.ffis.checkdomain.model.LogFileName;
 import me.ffis.checkdomain.model.MailTemplateModel;
 import me.ffis.checkdomain.model.constant.MessageConstant;
 import me.ffis.checkdomain.model.response.CheckDomainCode;
 import me.ffis.checkdomain.model.response.ReponseCode;
-import me.ffis.checkdomain.model.response.Result;
 import me.ffis.checkdomain.model.response.ResultResponse;
 import me.ffis.checkdomain.service.CheckService;
 import me.ffis.checkdomain.service.MailService;
