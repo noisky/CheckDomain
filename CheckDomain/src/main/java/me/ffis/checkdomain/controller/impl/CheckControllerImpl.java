@@ -4,16 +4,14 @@ import me.ffis.checkdomain.controller.CheckControllerApi;
 import me.ffis.checkdomain.model.response.ResultResponse;
 import me.ffis.checkdomain.service.CheckService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 域名状态查询实现
  * Created by fanfan on 2019/12/03.
  */
 
+@CrossOrigin //开启跨域请求
 @RestController
 public class CheckControllerImpl implements CheckControllerApi {
 

@@ -47,7 +47,7 @@ public class CnParser extends AParser {
     private final String REGISTRARREG = "Registrant: *(.+)";
     private final String EMAILREG = "Registrant Contact Email: *(.+)";
     //    private final String PHONEREG = "\\s*Registrar Abuse Contact Phone:\\s*[^\\n]+";
-    private final String CREATDATEREG = "Registration Time: *(.+)";
+    private final String CREATEDATEREG = "Registration Time: *(.+)";
     private final String EXPIREDATEREG = "Expiration Time: *(.+)";
     //    private final String UPDATEDATEREG = "\\s*Updated Date:\\s*[^\\n]+";
 //    private final String WHOISREG = "\\s*Registrar WHOIS Server:\\s*[^\\n]+";
@@ -57,7 +57,7 @@ public class CnParser extends AParser {
     private Pattern registrarPattern = Pattern.compile(REGISTRARREG);
     private Pattern emailPattern = Pattern.compile(EMAILREG);
     //    private Pattern phonePattern = Pattern.compile(PHONEREG);
-    private Pattern createDatePattern = Pattern.compile(CREATDATEREG);
+    private Pattern createDatePattern = Pattern.compile(CREATEDATEREG);
     private Pattern expireDatePattern = Pattern.compile(EXPIREDATEREG);
     //    private Pattern updateDatePattern = Pattern.compile(UPDATEDATEREG);
 //    private Pattern whoisServerPattern = Pattern.compile(WHOISREG);
@@ -78,7 +78,7 @@ public class CnParser extends AParser {
 //            String phone = getFieldValue(getMatchField(phonePattern, whoisResponse), ":");
 //            whoisModel.setPhone(phone);
             String createDate = getFieldValue(getMatchField(createDatePattern, whoisResponse), ":");
-            whoisModel.setCreatDate(simpleDateFormat.parse(createDate));
+            whoisModel.setCreateDate(simpleDateFormat.parse(createDate));
             String expireDate = getFieldValue(getMatchField(expireDatePattern, whoisResponse), ":");
             whoisModel.setExpireDate(simpleDateFormat.parse(expireDate));
 //            String updateDate = getFieldValue(getMatchField(updateDatePattern, whoisResponse), ":");

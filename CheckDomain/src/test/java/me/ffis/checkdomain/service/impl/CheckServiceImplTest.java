@@ -3,6 +3,7 @@ package me.ffis.checkdomain.service.impl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -18,6 +19,14 @@ public class CheckServiceImplTest {
 
     @Autowired
     private CheckServiceImpl checkService;
+
+    @Value("${MailUsername}")
+    private String username;
+
+    @Test
+    public void test1() {
+        System.out.println(username);
+    }
 
     /*@Test
     void queryFromAliyunTest() {

@@ -59,7 +59,7 @@ public class VerisignParser extends AParser {
     private final String REGISTRARREG = "Registrar: *(.+)";
     private final String EMAILREG = "Registrar Abuse Contact Email: *(.+)";
     private final String PHONEREG = "Registrar Abuse Contact Phone: *(.+)";
-    private final String CREATDATEREG = "Creation Date: *(.+)";
+    private final String CREATEDATEREG = "Creation Date: *(.+)";
     private final String EXPIREDATEREG = "Registry Expiry Date: *(.+)";
     private final String UPDATEDATEREG = "Updated Date: *(.+)";
     private final String WHOISREG = "Registrar WHOIS Server: *(.+)";
@@ -69,7 +69,7 @@ public class VerisignParser extends AParser {
     private Pattern registrarPattern = Pattern.compile(REGISTRARREG);
     private Pattern emailPattern = Pattern.compile(EMAILREG);
     private Pattern phonePattern = Pattern.compile(PHONEREG);
-    private Pattern createDatePattern = Pattern.compile(CREATDATEREG);
+    private Pattern createDatePattern = Pattern.compile(CREATEDATEREG);
     private Pattern expireDatePattern = Pattern.compile(EXPIREDATEREG);
     private Pattern updateDatePattern = Pattern.compile(UPDATEDATEREG);
     private Pattern whoisServerPattern = Pattern.compile(WHOISREG);
@@ -91,7 +91,7 @@ public class VerisignParser extends AParser {
             whoisModel.setPhone(phone);
             //SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String createDate = getFieldValue(getMatchField(createDatePattern, whoisResponse), ":");
-            whoisModel.setCreatDate(simpleDateFormat.parse(createDate));
+            whoisModel.setCreateDate(simpleDateFormat.parse(createDate));
             String expireDate = getFieldValue(getMatchField(expireDatePattern, whoisResponse), ":");
             whoisModel.setExpireDate(simpleDateFormat.parse(expireDate));
             String updateDate = getFieldValue(getMatchField(updateDatePattern, whoisResponse), ":");
