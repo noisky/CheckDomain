@@ -8,7 +8,15 @@ CheckDomain
 
 CheckDomain 是一个用来检查域名是否能注册的 Api，基于 Spring Boot 构建，使用了阿里云域名查询 Api；
 
-可实现对域名状态查询，可注册监控，whois信息查询等，并在域名可以注册的时候发送邮件通知。
+可实现对域名状态查询，可注册监控，whois 信息查询等，并在域名可以注册的时候发送邮件通知。
+
+现在新增了前端页面，可以直接在页面上进行 whois 信息的查询了
+
+如果需要前后端分离部署，直接修改 index.html 中 118 行的 baseUrl 为相应的后端地址即可
+
+Demo：https://whois.ffis.me
+
+![邮件通知注册演示](https://img.ffis.me/images/2020/02/27/whoisInfo.png)
 
 ![邮件通知注册演示](https://img.ffis.me/images/2019/12/05/checkdomain.png)
 
@@ -67,19 +75,17 @@ CheckDomain 是一个用来检查域名是否能注册的 Api，基于 Spring Bo
         
         - 暂时只支持 .com/.net/.edu/.org/.me/.cn 域名的查询
 
-### 已完成功能：
-- 检查域名是否能注册
-- 监控域名状态，如果可以注册，发送邮件通知
-- 使用 Freemarker 实现邮件模板的静态化
-- 使用 Logback 记录系统运行日志
-- 实现域名的 whois 信息查询（参考了 tammypi 的 whoisutil 工具类）
 
 ### TODO：
-- 编写前端页面，方便查询
-- 限制接口的调用频率
-- 统计并记录接口的调用次数，调用耗时等信息
-- 接入其他域名查询 Api
-- ...
+- [x] 检查域名是否能注册
+- [x] 监控域名状态，如果可以注册，发送邮件通知
+- [x] 使用 Freemarker 实现邮件模板的静态化
+- [x] 使用 Logback 记录系统运行日志
+- [x] 实现域名的 whois 信息查询（参考了 tammypi 的 whoisutil 工具类）
+- [x] 编写前端页面，方便查询；已完成编写，现在可以直接在页面上查询 whois 信息了
+- [ ] 限制接口的调用频率
+- [ ] 统计并记录接口的调用次数，调用耗时等信息
+
 
 ### Thanks：
 tammypi：[whoisutil][whoisutil]
