@@ -16,7 +16,7 @@ CheckDomain 是一个用来检查域名是否能注册的 Api，基于 Spring Bo
 
 Demo：https://whois.ffis.me
 
-![邮件通知注册演示](https://img.ffis.me/images/2020/02/27/whoisInfo.png)
+![whois查询页面展示](https://img.ffis.me/images/2020/02/27/whoisInfo.png)
 
 ![邮件通知注册演示](https://img.ffis.me/images/2019/12/05/checkdomain.png)
 
@@ -76,7 +76,7 @@ Demo：https://whois.ffis.me
         - 暂时只支持 .com/.net/.edu/.org/.me/.cn 域名的查询
 
 
-### TODO：
+### 已完成功能：
 - [x] 检查域名是否能注册
 - [x] 监控域名状态，如果可以注册，发送邮件通知
 - [x] 使用 Freemarker 实现邮件模板的静态化
