@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="author" content="Noisky">
+  <meta name="copyright" content="Noisky's Laboratory">
+  <meta name="description" content="域名Whois查询">
+  <meta name="keywords" content="域名,Whois,Whois查询">
+  <meta name="ViewPort" content="initial-scale=1, minimum-scale=1, width=device-width">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="renderer" content="webkit">
+  <title>域名Whois查询</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="css/main.css">
+  <script src="js/vue-v2.6.11.min.js"></script>
+<!--  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>-->
+</head>
+<body>
+<!-- 首屏加载动画 -->
+<div id="Loading">
+  <div class="loading-style-3">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<!-- Vue渲染盒子 -->
+<div id="app" v-cloak>
+  <header>域名whois查询</header>
+  <main>
+    <div class="content">
+      <p>请输入要查询的域名:</p>
+      <div class="input-group">
+        <div class="input-group_prepend">www.</div>
+        <input type="text" v-model="input_domain" @keyup.enter="checkDomain" placeholder="ffis.me" class="input_inner" />
+        <div class="input-group_append">
+          <button type="button" @click="checkDomain" class="search-button"></button>
+        </div>
+      </div>
+      <div class="support-info">
+        <p>暂时只支持 .com/.net/.edu/.org/.me/.cn 域名的查询</p>
+      </div>
+    </div>
+  </main>
+  <div class="search-loading" v-if="showSearchLoading">
+    <div class="loading-style-3">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <div class="domain-status">
+    <div class="available" v-if="domainAvailable"><p>域名：<span class="domainAvailable">{{domain}}</span> <span class="domain_available">未被注册</span></p></div>
+    <div class="registered" v-if="domainRegistered"><p>域名：<span class="domainName">{{domain}}</span> <span class="domain_registered">已被注册</span></p></div>
+    <div class="errorInfo" v-if="queryFailed"><p>查询失败！ {{errorInfo}}</p></div>
+  </div>
+  <div class="whois-result" v-if="showWhoisInfo">
+    <table id="tfhover" class="tftable" border="1">
+      <tr>
+        <th colspan = "2">域名 <span class="thDomain">{{domain}}</span> 的 Whois 信息：</th>
+      </tr>
+      <tr><td class="leftSide">域名：</td><td>{{whoisInfo.domain}}</td></tr>
+      <tr><td class="leftSide">注册商：</td><td>{{whoisInfo.registrar}}</td></tr>
+      <tr><td class="leftSide">邮箱：</td><td>{{whoisInfo.email}}</td></tr>
+      <tr><td class="leftSide">电话：</td><td>{{whoisInfo.phone}}</td></tr>
+      <tr><td class="leftSide">创建日期：</td><td>{{whoisInfo.createDate}}</td></tr>
+      <tr><td class="leftSide">过期日期：</td><td>{{whoisInfo.expireDate}}</td></tr>
+      <tr><td class="leftSide">更新日期：</td><td>{{whoisInfo.updateDate}}</td></tr>
+      <tr><td class="leftSide">Whois 服务器：</td><td>{{whoisInfo.whoisServer}}</td></tr>
+      <tr><td class="leftSide">域名状态：</td>
+        <td>
+          <span v-for="whois in whoisInfo.domainStatus">
+            {{ whois }};<br/>
+          </span>
+        </td>
+      </tr>
+      <tr><td class="leftSide">DNS 服务器：</td>
+        <td>
+          <span v-for="dnsName in whoisInfo.nameServer">
+            {{ dnsName }};<br/>
+          </span>
+        </td>
+      </tr>
+      <tr v-if="showWhiosReponse"><td class="leftSide">Whois返回信息：</td><td>{{whoisInfo.whiosReponse}}</td></tr>
+    </table>
+    <div class="show-whois-reponse">
+      <button type="button" class="info-button info-button--success" @click="openWhoisReponse" ref="whoisReponseButton">点击查看 详细英文信息</button>
+    </div>
+  </div>
+  <footer>
+      <p>Powered by <a href="https://ffis.me" target="_blank">Noisky</a></p>
+  </footer>
+</div>
+</body>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<!--<script src="js/axios-v0.19.2.min.js"></script>-->
+<script>
+  //vue渲染
+  var app = new Vue({
+    el: '#app',
+    data: {
+      input_domain: "",
+      domain: "",
+      whoisInfo: "",
+      errorInfo: "",
+      domainAvailable: false,
+      domainRegistered: false,
+      showWhoisInfo: false,
+      queryFailed: false,
+      showSearchLoading: false,
+      showWhiosReponse: false,
+      //前后端分离的时候设置后端服务器地址 例如：http://127.0.0.1:8087/ 结尾要带斜杠
+      baseUrl: ""
+    },
+    created() {
+      // 关闭载入加载动画
+      document.body.removeChild(document.getElementById('Loading'));
+      // 定义axios拦截器
+      // 添加请求拦截器
+      axios.interceptors.request.use((config) => {
+        // 在发送请求之前，显示加载条
+        this.showSearchLoading = true;
+        return config;
+      }, (error) => {
+        // 请求错误
+        this.showSearchLoading = false;
+        return Promise.reject(error);
+      });
+
+      // 添加响应拦截器
+      axios.interceptors.response.use((response) => {
+        // 拦截到响应数据，关闭加载条
+        this.showSearchLoading = false;
+        return response;
+      }, (error) => {
+        // 响应错误
+        this.showSearchLoading = false;
+        return Promise.reject(error);
+      });
+    },
+    methods: {
+      //显示域名英文信息方法
+      openWhoisReponse() {
+        //判断当前是否显示
+        if (this.showWhiosReponse) {
+          //如果显示，则隐藏
+          this.showWhiosReponse = false;
+          this.$refs.whoisReponseButton.innerHTML = "点击查看 详细英文信息";
+        } else {
+          //如果隐藏，则显示
+          this.showWhiosReponse = true;
+          this.$refs.whoisReponseButton.innerHTML = "点击关闭 详细英文信息";
+        }
+      },
+      checkDomain() {
+        //参数非空判断
+        if (this.input_domain === "") {
+          alert("请输入要查询的域名！");
+          return;
+        }
+        // 隐藏提示窗口
+        this.queryReset();
+        this.domain = this.input_domain;
+        // 发送异步请求查询检查组数据
+        axios.get(this.baseUrl + "whois/" + this.domain, {timeout: 1000 * 5}).then((res) => {
+          this.input_domain = "";
+          if (res.data.flag) {
+            // 查询成功
+            this.domainRegistered = true;
+            this.showWhoisInfo = true;
+            this.whoisInfo = res.data.data;
+            console.log(res.data)
+          } else if (res.data.code === 110) {
+            // 查询域名不存在，域名未注册
+            this.domainAvailable = true;
+          } else if (res.data.code === 111) {
+            // 不支持的后缀类型
+            alert("输入的域名后缀不支持！");
+            this.input_domain = "";
+          } else {
+            // 其他错误
+            this.errorInfo = res.data.data;
+            this.queryFailed = true;
+          }
+        }).catch((error) => {
+          console.log(error);
+          //查询出错判断
+          if (error == "Error: Network Error") {
+            this.errorInfo = "网络连接错误！";
+          }
+          if (error == "Error: timeout of 3000ms exceeded"){
+            this.errorInfo = "连接服务器超时，请重试！";
+          }
+          this.queryFailed = true;
+        });
+      },
+      // 隐藏提示窗口
+      queryReset() {
+        this.domainAvailable = false;
+        this.domainRegistered = false;
+        this.showWhoisInfo = false;
+        this.queryFailed = false
+      }
+    }
+  });
+</script>
+</html>
