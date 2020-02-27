@@ -146,7 +146,7 @@ main {
 
 footer {
     color: #4eb0f8;
-    margin: 50px auto 0;
+    margin: 50px auto 10px;
     width: 100%;
     z-index: 1;
     text-align: center;
