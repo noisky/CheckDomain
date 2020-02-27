@@ -64,25 +64,25 @@
       <tr>
         <th colspan = "2">域名 <span class="thDomain">{{domain}}</span> 的 Whois 信息：</th>
       </tr>
-      <tr><td class="leftSide">域名：</td><td>{{whoisInfo.domain}}</td></tr>
-      <tr><td class="leftSide">注册商：</td><td>{{whoisInfo.registrar}}</td></tr>
-      <tr><td class="leftSide">邮箱：</td><td>{{whoisInfo.email}}</td></tr>
-      <tr><td class="leftSide">电话：</td><td>{{whoisInfo.phone}}</td></tr>
-      <tr><td class="leftSide">创建日期：</td><td>{{whoisInfo.createDate}}</td></tr>
-      <tr><td class="leftSide">过期日期：</td><td>{{whoisInfo.expireDate}}</td></tr>
-      <tr><td class="leftSide">更新日期：</td><td>{{whoisInfo.updateDate}}</td></tr>
-      <tr><td class="leftSide">Whois 服务器：</td><td>{{whoisInfo.whoisServer}}</td></tr>
+      <tr><td class="leftSide">域名：</td><td>{{whoisInfo.domain == null || whoisInfo.domain == "" ? "暂无数据" : whoisInfo.domain}}</td></tr>
+      <tr><td class="leftSide">注册商：</td><td>{{whoisInfo.registrar == null || whoisInfo.registrar == "" ? "暂无数据" : whoisInfo.registrar}}</td></tr>
+      <tr><td class="leftSide">邮箱：</td><td>{{whoisInfo.email == null || whoisInfo.email == "" ? "暂无数据" : whoisInfo.email}}</td></tr>
+      <tr><td class="leftSide">电话：</td><td>{{whoisInfo.phone == null || whoisInfo.phone == "" ? "暂无数据" : whoisInfo.phone}}</td></tr>
+      <tr><td class="leftSide">创建日期：</td><td>{{whoisInfo.createDate == null || whoisInfo.createDate == "" ? "暂无数据" : whoisInfo.createDate}}</td></tr>
+      <tr><td class="leftSide">过期日期：</td><td>{{whoisInfo.expireDate == null || whoisInfo.expireDate == "" ? "暂无数据" : whoisInfo.expireDate}}</td></tr>
+      <tr><td class="leftSide">更新日期：</td><td>{{whoisInfo.updateDate == null || whoisInfo.updateDate == "" ? "暂无数据" : whoisInfo.updateDate}}</td></tr>
+      <tr><td class="leftSide">Whois 服务器：</td><td>{{whoisInfo.whoisServer == null || whoisInfo.whoisServer == "" ? "暂无数据" : whoisInfo.whoisServer}}</td></tr>
       <tr><td class="leftSide">域名状态：</td>
         <td>
           <span v-for="whois in whoisInfo.domainStatus">
-            {{ whois }};<br/>
+            {{ whois == null || whois == "" ? "暂无数据" : whois }};<br/>
           </span>
         </td>
       </tr>
       <tr><td class="leftSide">DNS 服务器：</td>
         <td>
           <span v-for="dnsName in whoisInfo.nameServer">
-            {{ dnsName }};<br/>
+            {{ dnsName == null || dnsName == "" ? "暂无数据" : dnsName }};<br/>
           </span>
         </td>
       </tr>
